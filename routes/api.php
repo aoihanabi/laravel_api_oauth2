@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +12,10 @@ use App\Http\Controllers\Api\AuthController;
 |
 */
 Route::post('register', 'Api\AuthController@register');
+
+Route::group(['middleware' => 'auth:api'], function() {
+    Route::post('testOauth', 'Api\AuthController@testOauth');
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

@@ -4,13 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Iluminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\User;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
+    public function testOauth () {
+        $user = Auth::user();
+        return response()->json([
+            'user' => $user
+        ], 200);
+    }
+    public function register (Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
