@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 //use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\ApiController;
+use Validator;
 use App\Userdata;
 use App\User;
 
@@ -34,5 +35,41 @@ class UserdataController extends ApiController
         $data["userdata"] = $userdata;
 
         return $this->sendResponse($data, "Datos de usuario recuperados correctamente");
+    }
+
+    public function addUsers(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required',
+            'edad' => 'required',
+            'genero' => 'required',
+            'acercade' => 'required',
+        ]);
+
+        if(!$validator) {
+            return $this->sendError("Error de validación", $validator->errors(), 422);
+        }
+
+        $input = $request->all();
+        $input["password"] = bcrypt($request->get("password"));
+        $user = User::create($input);
+        $token = $user->createToken("MyApp")->accessToken;
+
+        $userdata = new Userdata();
+        $userdata->nombre = $request->get('name');
+        $userdata->foto = $request->get('foto');
+        $userdata->edad = $request->get('edad');
+        $userdata->genero = $request->get('genero');
+        $userdata->acercade = $request->get('acercade');
+        $userdata->iduser = $user->id;
+        $userdata->save();
+
+        $data = [
+            "token" => $token,
+            "user" => $user,
+            "userdata" => $userdata,
+        ];
+        return $this->sendResponse($data, "Usuario creado correctamente");
     }
 }
