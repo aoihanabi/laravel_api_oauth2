@@ -106,4 +106,21 @@ class UserdataController extends ApiController
         ];
         return $this->sendResponse($data, "Usuario editado correctamente");
     }
+
+    public function deleteUsers(Request $request) {
+        $id = $request->get("id");
+        $user = User::find($id);
+        if($user === null) {
+            return $this->sendError("Error en los datos provistos", ["El usuario indicado no existe"], 422);
+        }
+
+        $user->delete();
+        $userdata = Userdata::where("iduser", "=", $id)->first();
+        $userdata->delete();
+
+        return $this->sendResponse([
+            "status" => "OK"
+        ], "Usuario eliminado correctamente");
+
+    }
 }
