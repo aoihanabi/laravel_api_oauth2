@@ -27,7 +27,7 @@ Route::get('actividad', 'Api\ActividadesController@getActividades');
 Route::get('actividad/{id}', 'Api\ActividadesController@getActividadDetail');
 Route::post('actividad', 'Api\ActividadesController@addActividad');
 Route::put('actividad', 'Api\ActividadesController@updateActividad');
-Route::delete('actividad', 'Api\ActividadesController@deleteActividad');
+Route::put('actividad/active', 'Api\ActividadesController@deleteActividad');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

@@ -21,7 +21,16 @@ class ActividadesController extends ApiController
 
         return $this->sendResponse($data, "Actividades recuperadas correctamente");
     }
-
+    
+    public function getActividadDetail($id, Request $request) {
+        $actividad = Actividad::find($id);
+        if($actividad === null) {
+            return $this->sendError("Error en los datos provistos", ["La actividad indicada no existe"], 422);
+        }
+        $data = [];
+        $data["actividad"] = $actividad;
+        return $this->sendResponse($data, "Datos de usuario recuperados correctamente");
+    }
     public function addActividad(Request $request) {
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|unique:actividad',
@@ -45,5 +54,55 @@ class ActividadesController extends ApiController
             "actividad" => $actividad,
         ];
         return $this->sendResponse($data, "Actividad creada correctamente");
+    }
+
+    public function updateActividad(Request $request) {
+        $actividad = Actividad::find($request->get("id"));
+        if($actividad === null) {
+            return $this->sendError("Error en los datos provistos", ["La actividad indicada no existe"], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|unique:actividad',
+            'foto' => 'required',
+            'descripcion' => 'required',
+            'fecha' => 'required',
+        ]);
+        if($validator->fails()) {
+            return $this->sendError("Error de validación", $validator->errors(), 422);
+        }
+        $actividad->nombre = $request->get("nombre");
+        $actividad->foto = $request->get("foto");
+        $actividad->descripcion = $request->get("descripcion");
+        $actividad->fecha = $request->get("fecha");
+        $actividad->save();
+
+        $data = [
+            "actividad" => $actividad,
+        ];
+        return $this->sendResponse($data, "Actividad editado correctamente");
+    }
+
+    public function deleteActividad(Request $request) {
+        $actividad = Actividad::find($request->get("id"));
+        if($actividad === null) {
+            return $this->sendError("Error en los datos provistos", ["La actividad indicada no existe"], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'active' => 'required',
+        ]);
+        if($validator->fails()) {
+            return $this->sendError("Error de validación", $validator->errors(), 422);
+        }
+
+        $actividad->active = $request->get("active");
+        $actividad->save();
+
+        $data = [
+            "actividad" => $actividad,
+        ];
+        return $this->sendResponse($data, "Actividad editado correctamente");
+
     }
 }
