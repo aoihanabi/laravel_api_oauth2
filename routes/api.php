@@ -19,6 +19,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 });
 //Out of the middleware just while developing
 Route::get('getUsers', 'Api\UserdataController@getUsers');
+Route::get('getUsers/{id}', 'Api\UserdataController@getUserDetail');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
