@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+//use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\User;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
     public function testOauth () {
         $user = Auth::user();
-        return response()->json([
-            'user' => $user
-        ], 200);
+        return $this->sendResponse($user, "Usuario recuperado correctamente");
     }
     public function register (Request $request) {
         $validator = Validator::make($request->all(), [
@@ -25,9 +24,7 @@ class AuthController extends Controller
         ]);
 
         if(!$validator) {
-            return response()->json (
-                ["error"=>$validator->errors()], 422
-            );
+            return $this->sendError("Error de validación", $validator->errors(), 422);
         }
 
         $input = $request->all();
@@ -35,12 +32,10 @@ class AuthController extends Controller
         $user = User::create($input);
         $token = $user->createToken("MyApp")->accessToken;
 
-        return response()->json (
-            [
-                "token" => $token,
-                "user" => $user,
-            ], 
-            200
-        );
+        $data = [
+            "token" => $token,
+            "user" => $user,
+        ];
+        return $this->sendResponse($data, "Usuario registrado correctamente");
     }
 }
