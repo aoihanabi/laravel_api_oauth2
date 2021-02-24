@@ -72,4 +72,38 @@ class UserdataController extends ApiController
         ];
         return $this->sendResponse($data, "Usuario creado correctamente");
     }
+
+    public function updateUsers(Request $request) {
+        $id = $request->get("id");
+        $user = User::find($id);
+        if($user === null) {
+            return $this->sendError("Error en los datos provistos", ["El usuario indicado no existe"], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'edad' => 'required',
+            'genero' => 'required',
+            'acercade' => 'required',
+        ]);
+        if($validator->fails()) {
+            return $this->sendError("Error de validación", $validator->errors(), 422);
+        }
+
+        $user->name = $request->get("name");
+        $user->save();
+
+        $userdata = Userdata::where("iduser", "=", $id)->first();
+        $userdata->nombre = $request->get("name");
+        $userdata->edad = $request->get("edad");
+        $userdata->genero = $request->get("genero");
+        $userdata->acercade = $request->get("acercade");
+        $userdata->save();
+
+        $data = [
+            "user" => $user,
+            "userdata" => $userdata,
+        ];
+        return $this->sendResponse($data, "Usuario editado correctamente");
+    }
 }
