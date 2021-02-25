@@ -32,9 +32,9 @@ Route::group(['middleware' => 'auth:api'], function() {
 });
 //Out of the middleware just while developing
 Route::get('confirmacion', 'Api\ConfirmacionController@getConfirmaciones');
-//Route::get('confirmacion/{id}', 'Api\ConfirmacionController@getActividadDetail');
+Route::get('confirmacion/{id}', 'Api\ConfirmacionController@getConfirmacionDetail');
+Route::get('confirmacionUser/{id}', 'Api\ConfirmacionController@getConfirmacionUser');
 Route::post('confirmacion', 'Api\ConfirmacionController@addConfirmacion');
-//Route::put('confirmacion', 'Api\ConfirmacionController@updateActividad');
 Route::delete('confirmacion', 'Api\ConfirmacionController@deleteConfirmacion');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
