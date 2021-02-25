@@ -23,20 +23,22 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::delete('getUsers', 'Api\UserdataController@deleteUsers');
     
     Route::get('actividad', 'Api\ActividadesController@getActividades');
-    
+    Route::get('actividad/{id}', 'Api\ActividadesController@getActividadDetail');
     Route::post('actividad', 'Api\ActividadesController@addActividad');
     Route::put('actividad', 'Api\ActividadesController@updateActividad');
     Route::put('actividad/active', 'Api\ActividadesController@deleteActividad');
 
 
 });
-Route::get('actividad/{id}', 'Api\ActividadesController@getActividadDetail');
+
 //Out of the middleware just while developing
 Route::get('confirmacion', 'Api\ConfirmacionController@getConfirmaciones');
 Route::get('confirmacion/{id}', 'Api\ConfirmacionController@getConfirmacionDetail');
 Route::get('confirmacionUser/{id}', 'Api\ConfirmacionController@getConfirmacionUser');
 Route::post('confirmacion', 'Api\ConfirmacionController@addConfirmacion');
 Route::delete('confirmacion', 'Api\ConfirmacionController@deleteConfirmacion');
+
+Route::put('getUsers/addOneSignal/{id}', 'Api\UserdataController@addOneSignal');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

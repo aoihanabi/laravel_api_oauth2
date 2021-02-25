@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\ApiController;
 use Validator;
+use OneSignal;
 use App\Confirmacion;
 use App\Actividad;
 
@@ -85,6 +86,22 @@ class ConfirmacionController extends ApiController
         $confirmacion->iduser = $request->get('iduser');
         $confirmacion->idactividad = $request->get('idactividad');
         $confirmacion->save();
+
+        $users = DB::table('confirmacion')
+                ->where('confirmacion.idactividad', '=', $confirmacion->idactividad)
+                ->join('userdata', 'confirmacion.iduser', 'userdata.iduser')
+                ->select("userdata.idonesignal")
+                ->get();
+        foreach($users as $user) {
+            $id = $user->idonesignal;
+            if ($id != 1) {
+                OneSignal::sendNotificationToUser("Se a apuntado otro usuario a la actividad",
+                $id,
+                $data = null,
+                $buttons = null,
+                $schedule = null); //data buttons and schedule are examples of things I could send to the app receiving the notification
+            }
+        }
 
         $data = [
             "confirmacion" => $confirmacion,

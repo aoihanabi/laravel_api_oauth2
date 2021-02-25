@@ -107,6 +107,27 @@ class UserdataController extends ApiController
         return $this->sendResponse($data, "Usuario editado correctamente");
     }
 
+    public function addOneSignal($id, Request $request) {
+        $user = Userdata::find($id);
+        if($user === null) {
+            return $this->sendError("Error en los datos provistos", ["El usuario indicado no existe"], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'oneSignalId' => 'required',
+        ]);
+        if($validator->fails()) {
+            return $this->sendError("Error de validación", $validator->errors(), 422);
+        }
+        $user->idonesignal = $request->get("oneSignalId");
+        $user->save();
+
+        $data = [
+            "user" => $user,
+        ];
+        return $this->sendResponse($data, "OneSignal de usuario agregado correctamente");
+    }
+
     public function deleteUsers(Request $request) {
         $id = $request->get("id");
         $user = User::find($id);
