@@ -21,13 +21,21 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('getUsers', 'Api\UserdataController@addUsers');
     Route::put('getUsers', 'Api\UserdataController@updateUsers');
     Route::delete('getUsers', 'Api\UserdataController@deleteUsers');
+    
+    Route::get('actividad', 'Api\ActividadesController@getActividades');
+    Route::get('actividad/{id}', 'Api\ActividadesController@getActividadDetail');
+    Route::post('actividad', 'Api\ActividadesController@addActividad');
+    Route::put('actividad', 'Api\ActividadesController@updateActividad');
+    Route::put('actividad/active', 'Api\ActividadesController@deleteActividad');
+
+
 });
 //Out of the middleware just while developing
-Route::get('actividad', 'Api\ActividadesController@getActividades');
-Route::get('actividad/{id}', 'Api\ActividadesController@getActividadDetail');
-Route::post('actividad', 'Api\ActividadesController@addActividad');
-Route::put('actividad', 'Api\ActividadesController@updateActividad');
-Route::put('actividad/active', 'Api\ActividadesController@deleteActividad');
+Route::get('confirmacion', 'Api\ConfirmacionController@getConfirmaciones');
+//Route::get('confirmacion/{id}', 'Api\ConfirmacionController@getActividadDetail');
+Route::post('confirmacion', 'Api\ConfirmacionController@addConfirmacion');
+//Route::put('confirmacion', 'Api\ConfirmacionController@updateActividad');
+Route::delete('confirmacion', 'Api\ConfirmacionController@deleteConfirmacion');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
