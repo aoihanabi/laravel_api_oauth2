@@ -27,10 +27,20 @@ class ActividadesController extends ApiController
         if($actividad === null) {
             return $this->sendError("Error en los datos provistos", ["La actividad indicada no existe"], 422);
         }
-        $data = [];
-        $data["actividad"] = $actividad;
+
+        $confirmaciones = DB::table('confirmacion')
+                ->where('confirmacion.idactividad', '=', $id)
+                ->join('userdata', 'confirmacion.iduser', 'userdata.iduser')
+                ->select("userdata.iduser", 'userdata.nombre', 'userdata.foto', 'userdata.edad', 'userdata.genero')
+                ->get();
+
+        $data = [
+            "actividad" => $actividad,
+            "users" => $confirmaciones
+        ];
         return $this->sendResponse($data, "Datos de usuario recuperados correctamente");
     }
+
     public function addActividad(Request $request) {
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|unique:actividad',
